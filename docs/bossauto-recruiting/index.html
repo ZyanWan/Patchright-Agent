@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bossauto Recruiting - 可审计的 BOSS 招聘自动化工作流</title>
+    <meta
+      name="description"
+      content="Bossauto Recruiting 是一个面向授权招聘账号的 BOSS 招聘自动化工作流，覆盖页面诊断、候选人扫描、证据提取、规则快筛、受控动作和审计记录。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Bossauto Recruiting 首页">
+        <span class="brand-mark" aria-hidden="true">B</span>
+        <span>Bossauto Recruiting</span>
+      </a>
+      <nav class="site-nav" aria-label="页面导航">
+        <a href="#workflow">工作流</a>
+        <a href="#safety">安全边界</a>
+        <a href="#install">安装</a>
+        <a href="#artifacts">产物</a>
+        <a href="#demo">演示</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero section-band">
+        <div class="hero-copy">
+          <p class="eyebrow">BOSS recruiting workflow sketch</p>
+          <h1>
+            <span>可审计的</span>
+            <span>BOSS 招聘</span>
+            <span>自动化工作流</span>
+          </h1>
+          <p class="hero-lede">
+            从页面诊断、候选人扫描、证据提取到授权沟通，把招聘动作拆成可检查、可复核、可追踪的本地流程。
+          </p>
+          <div class="hero-actions" aria-label="主要操作">
+            <a class="btn primary" href="#workflow">查看工作流</a>
+            <a class="btn secondary" href="#safety">阅读安全边界</a>
+          </div>
+          <div class="hero-notes" aria-label="关键特性">
+            <span>read-only first</span>
+            <span>stable ID targeting</span>
+            <span>action log required</span>
+          </div>
+        </div>
+
+        <figure class="hero-visual" aria-label="Bossauto Recruiting 手绘工作流主视觉">
+          <img
+            src="./assets/bossauto-handdrawn-hero.png"
+            alt="手绘线框风格的 Bossauto Recruiting 工作流，包含候选人列表、证据面板、审计日志和便签注释"
+          />
+        </figure>
+      </section>
+
+      <section id="install" class="section-band install-section">
+        <div class="section-heading">
+          <p class="eyebrow">install</p>
+          <h2>一条命令安装 Agent Skills</h2>
+          <p>
+            安装器只会安装仓库 <code>skills/</code> 下包含 <code>SKILL.md</code> 的 Skill 目录，不会安装本地测试结果、浏览器登录状态、运行时证据、录屏素材或仓库工具。
+          </p>
+        </div>
+
+        <div class="install-layout">
+          <article class="install-panel primary-install">
+            <span class="install-label">公开 npm 安装器</span>
+            <h3>推荐方式</h3>
+            <pre><code>npm install -g @zyanwan/patchright-agent-installer --registry=https://registry.npmjs.org/
+patchright-agent-installer install codex</code></pre>
+            <p>适合同事或用户从公开 npm 获取安装器，再从私有 Skill 源安装到本机 Agent 目录。</p>
+          </article>
+
+          <article class="install-panel">
+            <span class="install-label">私有 GitHub 源</span>
+            <h3>直接安装</h3>
+            <pre><code>npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex</code></pre>
+            <p>适合已经拥有私有仓库读取权限的用户，直接从仓库下载并安装内置的 <code>skills/</code>。</p>
+          </article>
+        </div>
+
+        <div class="target-row" aria-label="支持的安装目标">
+          <span>Codex: <code>~/.agents/skills</code></span>
+          <span>Claude: <code>~/.claude/skills</code></span>
+          <span>自定义: <code>--target &lt;path&gt;</code></span>
+        </div>
+      </section>
+
+      <section id="workflow" class="section-band workflow-section">
+        <div class="section-heading">
+          <p class="eyebrow">workflow</p>
+          <h2>先观察，再判断，最后才行动</h2>
+          <p>
+            这个项目不是一组孤立点击脚本，而是一条围绕证据和审计设计的招聘流水线。默认路径保持只读，任何网站状态变更都需要当前授权和目标复核。
+          </p>
+        </div>
+
+        <ol class="workflow-list">
+          <li>
+            <span class="step-index">01</span>
+            <h3>页面诊断</h3>
+            <p>识别当前 BOSS 页面类型、URL、frame 和候选人卡片结构，保留用户当前业务上下文。</p>
+          </li>
+          <li>
+            <span class="step-index">02</span>
+            <h3>候选人扫描</h3>
+            <p>提取 stableId、姓名、公司、岗位、学历、全文卡片证据和疑似已沟通信号。</p>
+          </li>
+          <li>
+            <span class="step-index">03</span>
+            <h3>规则快筛</h3>
+            <p>按招聘要求做本地 dry-run，信息不足或身份不稳时进入 review，而不是强行拒绝。</p>
+          </li>
+          <li>
+            <span class="step-index">04</span>
+            <h3>详情证据</h3>
+            <p>打开候选人详情，保存 DOM 文本、截图、canvas 诊断和身份匹配状态。</p>
+          </li>
+          <li>
+            <span class="step-index">05</span>
+            <h3>受控动作</h3>
+            <p>收藏、发起沟通和批量沟通默认 dry-run，只有明确授权后才按 stableId 重新定位并执行。</p>
+          </li>
+          <li>
+            <span class="step-index">06</span>
+            <h3>审计交付</h3>
+            <p>输出 JSON、截图、decision records 和 append-only action log，让招聘负责人可以复核。</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="safety" class="section-band safety-section">
+        <div class="section-heading compact">
+          <p class="eyebrow">guardrails</p>
+          <h2>把高风险动作留在边界内</h2>
+        </div>
+
+        <div class="guardrail-layout">
+          <div class="paper-panel">
+            <h3>默认允许</h3>
+            <ul class="check-list">
+              <li>打开可见浏览器，交给用户完成登录</li>
+              <li>读取标题、URL、frame、候选人卡片</li>
+              <li>保存截图、JSON 和详情证据</li>
+              <li>本地记录筛选结果和人工复核原因</li>
+            </ul>
+          </div>
+          <div class="paper-panel warning">
+            <h3>必须授权</h3>
+            <ul class="check-list">
+              <li>收藏、保存、发起沟通或批量动作</li>
+              <li>应用筛选条件或改变页面状态</li>
+              <li>切换职位、刷新推荐列表或处理已沟通候选人</li>
+              <li>任何可能触发付费、限制或不可逆状态的操作</li>
+            </ul>
+          </div>
+          <aside class="sticky-note">
+            <strong>不做的事</strong>
+            <span>不绕过登录、验证码、MFA、限制或付费控制。</span>
+            <span>不自动编写和发送自定义聊天消息。</span>
+            <span>不靠列表序号点击候选人。</span>
+          </aside>
+        </div>
+      </section>
+
+      <section id="artifacts" class="section-band artifacts-section">
+        <div class="section-heading">
+          <p class="eyebrow">runtime artifacts</p>
+          <h2>每一步都有本地证据</h2>
+          <p>
+            页面结果不是口头承诺，而是可解析、可追踪的工作目录。后续做报告、Excel 或人工复核时，可以直接复用这些文件。
+          </p>
+        </div>
+
+        <div class="artifact-grid">
+          <article>
+            <span class="file-chip">candidates.json</span>
+            <h3>候选人扫描</h3>
+            <p>当前页面可见卡片、stableId、frame 来源、疑似已沟通标记和完整卡片文本。</p>
+          </article>
+          <article>
+            <span class="file-chip">detail-evidence/*.png</span>
+            <h3>详情截图</h3>
+            <p>对 DOM 文本不足、canvas 简历或身份不确定的候选人，保留可视化证据。</p>
+          </article>
+          <article>
+            <span class="file-chip">dry-run-decisions.json</span>
+            <h3>快筛判断</h3>
+            <p>区分 pass、reject、review、skip，不把信息缺失误当成硬拒绝。</p>
+          </article>
+          <article>
+            <span class="file-chip">action-log.jsonl</span>
+            <h3>动作审计</h3>
+            <p>记录每次授权动作的候选人、原因、状态、时间戳和证据路径。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="demo" class="section-band demo-section">
+        <div class="section-heading">
+          <p class="eyebrow">demo footage</p>
+          <h2>本地浏览器工作流演示</h2>
+          <p>视频素材保留在项目目录中，页面只做静态引用。打开 HTML 即可查看，不需要启动服务。</p>
+        </div>
+
+        <div class="demo-grid">
+          <figure>
+            <video controls preload="metadata" src="./assets/bossauto-start.mp4"></video>
+            <figcaption>启动授权浏览器会话</figcaption>
+          </figure>
+          <figure>
+            <video controls preload="metadata" src="./assets/bossauto-running.mp4"></video>
+            <figcaption>候选人处理与运行状态</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>Bossauto Recruiting</span>
+      <span>Local-first evidence, human-approved actions.</span>
+    </footer>
+  </body>
+</html>

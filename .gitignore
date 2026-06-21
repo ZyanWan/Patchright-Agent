@@ -32,9 +32,8 @@ dist/
 *.log
 *.tmp
 
-# Local test runs, evidence, and demo recordings.
+# Local test runs and evidence.
 tests/
-docs/**/assets/*.mp4
 
 # Local environment and OS/editor files.
 .env

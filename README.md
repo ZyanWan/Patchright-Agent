@@ -21,6 +21,12 @@ skills/
 This repository is private. End users must have read access to `ZyanWan/Patchright-Agent` and be authenticated with GitHub CLI before installing.
 
 ```bash
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
+```
+
+If using the future public npm installer package, users will run:
+
+```bash
 gh auth login
 npx -y @zyanwan/patchright-agent-installer install codex
 ```
@@ -28,6 +34,10 @@ npx -y @zyanwan/patchright-agent-installer install codex
 Supported targets in the first installer version:
 
 ```bash
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install claude
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install --target ~/.agents/skills
+
 npx -y @zyanwan/patchright-agent-installer install codex
 npx -y @zyanwan/patchright-agent-installer install claude
 npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills

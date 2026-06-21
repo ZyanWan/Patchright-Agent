@@ -14,9 +14,12 @@ import {
 import { constants } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const DEFAULT_REPO = "ZyanWan/Patchright-Agent";
 const DEFAULT_SOURCE = "skills";
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const PACKAGE_ROOT = path.resolve(SCRIPT_DIR, "..", "..");
 
 const TARGETS = {
   codex: {
@@ -65,6 +68,7 @@ function parseArgs(argv) {
     force: false,
     dryRun: false,
     keepTemp: false,
+    remote: false,
     help: false
   };
   const positionals = [];
@@ -90,6 +94,8 @@ function parseArgs(argv) {
       options.dryRun = true;
     } else if (arg === "--keep-temp") {
       options.keepTemp = true;
+    } else if (arg === "--remote") {
+      options.remote = true;
     } else if (arg.startsWith("--")) {
       throw new Error(`Unknown option "${arg}".`);
     } else {
@@ -118,10 +124,12 @@ function readValue(argv, index, flag) {
 
 async function install({ agent, options }) {
   const targetRoot = resolveTargetRoot(agent, options);
+  const bundledSourceRoot = await getBundledSourceRoot(options);
   const plan = {
     repository: options.repo,
     ref: options.ref || "default branch",
     source: options.source,
+    sourceMode: bundledSourceRoot ? "bundled package" : "private repository clone",
     target: targetRoot,
     scope: options.target ? "custom" : options.scope,
     agent: options.target ? "custom" : agent
@@ -134,25 +142,30 @@ async function install({ agent, options }) {
     return;
   }
 
-  ensureCommand("gh", "Install GitHub CLI and run: gh auth login");
-  ensureCommand("git", "Install Git so GitHub CLI can clone repositories.");
-  ensureGitHubAuth();
-
-  const tempRoot = await mkdtemp(path.join(os.tmpdir(), "patchright-agent-"));
+  const tempRoot = bundledSourceRoot ? null : await mkdtemp(path.join(os.tmpdir(), "patchright-agent-"));
   let cleanupTemp = true;
 
   try {
-    run("gh", ["repo", "clone", options.repo, tempRoot], {
-      hint: `Could not clone ${options.repo}. Confirm the user has repository access and has run "gh auth login".`
-    });
+    let sourceRoot = bundledSourceRoot;
 
-    if (options.ref) {
-      run("git", ["-C", tempRoot, "checkout", options.ref], {
-        hint: `Could not checkout ref "${options.ref}".`
+    if (!sourceRoot) {
+      ensureCommand("gh", "Install GitHub CLI and run: gh auth login");
+      ensureCommand("git", "Install Git so GitHub CLI can clone repositories.");
+      ensureGitHubAuth();
+
+      run("gh", ["repo", "clone", options.repo, tempRoot], {
+        hint: `Could not clone ${options.repo}. Confirm the user has repository access and has run "gh auth login".`
       });
+
+      if (options.ref) {
+        run("git", ["-C", tempRoot, "checkout", options.ref], {
+          hint: `Could not checkout ref "${options.ref}".`
+        });
+      }
+
+      sourceRoot = path.resolve(tempRoot, options.source);
     }
 
-    const sourceRoot = path.resolve(tempRoot, options.source);
     const skills = await findSkillDirectories(sourceRoot);
 
     if (skills.length === 0) {
@@ -180,15 +193,28 @@ async function install({ agent, options }) {
     }
 
     console.log("\nInstall complete.");
-    cleanupTemp = !options.keepTemp;
-    if (options.keepTemp) {
+    cleanupTemp = Boolean(tempRoot) && !options.keepTemp;
+    if (tempRoot && options.keepTemp) {
       console.log(`Temporary clone kept at ${tempRoot}`);
     }
   } finally {
-    if (cleanupTemp) {
+    if (tempRoot && cleanupTemp) {
       await rm(tempRoot, { recursive: true, force: true });
     }
   }
+}
+
+async function getBundledSourceRoot(options) {
+  if (options.remote) {
+    return null;
+  }
+
+  const sourceRoot = path.resolve(PACKAGE_ROOT, options.source);
+  if (await exists(sourceRoot)) {
+    return sourceRoot;
+  }
+
+  return null;
 }
 
 function resolveTargetRoot(agent, options) {
@@ -362,6 +388,7 @@ function printPlan(plan) {
   console.log(`Repository: ${plan.repository}`);
   console.log(`Ref:        ${plan.ref}`);
   console.log(`Source:     ${plan.source}`);
+  console.log(`Mode:       ${plan.sourceMode}`);
   console.log(`Agent:      ${plan.agent}`);
   console.log(`Scope:      ${plan.scope}`);
   console.log(`Target:     ${plan.target}`);
@@ -385,9 +412,11 @@ Options:
   --force                    Back up and replace existing installed skills
   --dry-run                  Print planned actions without cloning or copying
   --keep-temp                Keep the temporary clone for debugging
+  --remote                   Force cloning ${DEFAULT_REPO} even if bundled skills are present
   -h, --help                 Show this help
 
 Examples:
+  npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
   npx -y @zyanwan/patchright-agent-installer install codex
   npx -y @zyanwan/patchright-agent-installer install claude --force
   npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills

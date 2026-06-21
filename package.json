@@ -1,0 +1,13 @@
+{
+  "name": "patchright-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Patchright-powered Agent Skills for real-browser automation.",
+  "type": "module",
+  "bin": {
+    "patchright-agent": "installer/bin/patchright-agent-installer.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,12 +1,16 @@
 # Patchright Agent Installer
 
-Public command-line installer for the private `ZyanWan/Patchright-Agent` Skill repository.
+Command-line installer for the private `ZyanWan/Patchright-Agent` Skill repository.
 
-The package is intentionally thin. It contains no private Skill files; it only downloads the private source repository with GitHub CLI and installs all valid directories under `skills/` into the selected Agent skills directory.
+When run from the private GitHub repository with `npx git+https://...`, it installs bundled `skills/` directly. When later published as a public npm package without bundled skills, it downloads the private source repository with GitHub CLI and installs all valid directories under `skills/` into the selected Agent skills directory.
 
 ## Usage
 
 ```bash
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install claude
+npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install --target ~/.agents/skills
+
 npx -y @zyanwan/patchright-agent-installer install codex
 npx -y @zyanwan/patchright-agent-installer install claude
 npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills

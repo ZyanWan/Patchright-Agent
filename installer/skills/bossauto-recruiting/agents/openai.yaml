@@ -1,0 +1,4 @@
+interface:
+  display_name: "Bossauto Recruiting"
+  short_description: "BOSS recruiting batches, evidence, reports, logged actions."
+  default_prompt: "Use $bossauto-recruiting to run an authorized BOSS recruiting task, including candidate scanning, screening, batch contact initiation, reports, and logged actions."

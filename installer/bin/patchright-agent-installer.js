@@ -149,15 +149,20 @@ async function install({ agent, options }) {
     let sourceRoot = bundledSourceRoot;
 
     if (!sourceRoot) {
-      ensureCommand("gh", "Install GitHub CLI and run: gh auth login");
-      ensureCommand("git", "Install Git so GitHub CLI can clone repositories.");
-      ensureGitHubAuth();
+      ensureCommand("git", "Install Git to clone the private repository.");
 
-      run("gh", ["repo", "clone", options.repo, tempRoot], {
-        hint: `Could not clone ${options.repo}. Confirm the user has repository access and has run "gh auth login".`
+      const cloneUrl = options.repo.includes("/")
+        ? `https://github.com/${options.repo}.git`
+        : options.repo;
+
+      run("git", ["clone", "--depth", "1", cloneUrl, tempRoot], {
+        hint: `Could not clone ${cloneUrl}. Confirm you have repository access and Git credentials configured.`
       });
 
       if (options.ref) {
+        run("git", ["-C", tempRoot, "fetch", "origin", options.ref], {
+          hint: `Could not fetch ref "${options.ref}".`
+        });
         run("git", ["-C", tempRoot, "checkout", options.ref], {
           hint: `Could not checkout ref "${options.ref}".`
         });
@@ -209,10 +214,28 @@ async function getBundledSourceRoot(options) {
     return null;
   }
 
-  const sourceRoot = path.resolve(PACKAGE_ROOT, options.source);
-  if (await exists(sourceRoot)) {
-    return sourceRoot;
+  // 策略1: 标准 PACKAGE_ROOT 解析（bin/.. → package root）
+  const candidatePaths = [
+    path.resolve(PACKAGE_ROOT, options.source),
+    // 策略2: 从 import.meta.url 直接向上两级（兼容 npm shim 场景）
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", options.source),
+    // 策略3: 从 SCRIPT_DIR 向上一级再找 source
+    path.resolve(SCRIPT_DIR, "..", options.source)
+  ];
+
+  for (const candidate of candidatePaths) {
+    if (await exists(candidate)) {
+      console.log(`[bundle] Found bundled skills at: ${candidate}`);
+      return candidate;
+    }
   }
+
+  // 诊断信息：帮助排查为什么 bundle 没找到
+  console.log(`[bundle] No bundled skills found. Searched:`);
+  for (const p of candidatePaths) {
+    console.log(`[bundle]   - ${p}`);
+  }
+  console.log(`[bundle] PACKAGE_ROOT=${PACKAGE_ROOT}, SCRIPT_DIR=${SCRIPT_DIR}`);
 
   return null;
 }
@@ -348,18 +371,16 @@ async function doctor() {
   console.log("Patchright Agent Installer doctor\n");
 
   reportCommand("git", "Git");
-  reportCommand("gh", "GitHub CLI");
 
-  const ghStatus = spawnSync("gh", ["auth", "status"], {
+  const gitConfig = spawnSync("git", ["config", "--global", "credential.helper"], {
     encoding: "utf8",
     stdio: "pipe"
   });
 
-  if (ghStatus.status === 0) {
-    console.log("ok   GitHub CLI is authenticated");
+  if (gitConfig.status === 0) {
+    console.log(`ok   Git credential helper: ${gitConfig.stdout.trim()}`);
   } else {
-    console.log("fail GitHub CLI is not authenticated");
-    console.log("     Run: gh auth login");
+    console.log("warn Git credential helper not configured — you may be prompted for credentials during clone");
   }
 
   console.log("\nDefault targets:");
@@ -412,7 +433,7 @@ Options:
   --force                    Back up and replace existing installed skills
   --dry-run                  Print planned actions without cloning or copying
   --keep-temp                Keep the temporary clone for debugging
-  --remote                   Force cloning ${DEFAULT_REPO} even if bundled skills are present
+  --remote                   Force remote clone even if bundled skills are present
   -h, --help                 Show this help
 
 Examples:

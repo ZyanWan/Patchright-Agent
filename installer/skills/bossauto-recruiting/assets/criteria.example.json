@@ -1,0 +1,51 @@
+{
+  "project": "example-role",
+  "notes": "Copy this file to a workspace-local runtime path before editing. Keep business rules out of scripts.",
+  "hard": {
+    "skip_contacted": true,
+    "forbid_company_keywords": [],
+    "allow_company_keywords": [],
+    "title_block_keywords": [],
+    "title_allow_keywords": [],
+    "education_required_any": []
+  },
+  "filters": {
+    "recommend": {
+      "学历要求": [],
+      "经验要求": [],
+      "活跃状态": [],
+      "求职状态": []
+    },
+    "search": {
+      "city": "",
+      "degrees": [],
+      "schools": [],
+      "experiences": [],
+      "ageMin": null,
+      "ageMax": null,
+      "salaryMinK": null,
+      "activeness": "",
+      "jobHop": ""
+    }
+  },
+  "model_gates": {
+    "enabled": false,
+    "company_gate": {
+      "use_only": ["companyText"],
+      "uncertain": "review"
+    },
+    "title_gate": {
+      "use_only": ["titleText"],
+      "uncertain": "review"
+    },
+    "detail_gate": {
+      "use_only": ["saved_detail_text", "saved_screenshot"],
+      "uncertain": "review"
+    }
+  },
+  "run_plan": {
+    "dry_run": true,
+    "limit": 30,
+    "action_on_pass": "review_only"
+  }
+}

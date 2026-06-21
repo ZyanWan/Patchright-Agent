@@ -1,0 +1,4 @@
+interface:
+  display_name: "Patchright Browser"
+  short_description: "Automate authorized Chromium browser workflows with Patchright."
+  default_prompt: "Use $patchright-browser to open an authorized site, inspect the page, and automate browser actions."

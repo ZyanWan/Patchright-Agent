@@ -1,6 +1,6 @@
 {
   "name": "@zyanwan/patchright-agent-installer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Public installer for the private Patchright-Agent skills repository.",
   "type": "module",
   "bin": {
@@ -8,6 +8,7 @@
   },
   "files": [
     "bin",
+    "skills",
     "README.md"
   ],
   "engines": {
@@ -18,7 +19,5 @@
     "registry": "https://registry.npmjs.org/"
   },
   "license": "UNLICENSED",
-  "dependencies": {
-    "@zyanwan/patchright-agent-installer": "^0.1.0"
-  }
+  "dependencies": {}
 }

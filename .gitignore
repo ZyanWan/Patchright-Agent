@@ -1,0 +1,44 @@
+# Runtime state and generated evidence.
+runtime/profiles/*
+runtime/artifacts/*
+runtime/downloads/*
+!runtime/profiles/.gitkeep
+!runtime/artifacts/.gitkeep
+!runtime/downloads/.gitkeep
+
+# Legacy flat runtime names.
+patchright-profile*/
+artifacts/
+
+# Python caches.
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node and Electron generated output.
+node_modules/
+**/node_modules/
+out/
+**/out/
+dist/
+**/dist/
+*.tsbuildinfo
+
+# Browser automation output.
+*.har
+*.log
+*.tmp
+
+# Local test runs, evidence, and demo recordings.
+tests/
+docs/**/assets/*.mp4
+
+# Local environment and OS/editor files.
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

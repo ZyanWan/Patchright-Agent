@@ -1,0 +1,36 @@
+{
+  "name": "bossauto-electron",
+  "version": "0.1.0",
+  "description": "BOSS 直聘自动筛简历 - Electron + patchright",
+  "private": true,
+  "main": "./out/main/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node node_modules/electron-vite/bin/electron-vite.js dev",
+    "build": "node node_modules/electron-vite/bin/electron-vite.js build",
+    "start": "node node_modules/electron-vite/bin/electron-vite.js preview",
+    "typecheck": "node node_modules/typescript/bin/tsc --noEmit -p tsconfig.node.json && node node_modules/typescript/bin/tsc --noEmit -p tsconfig.web.json",
+    "setup": "node scripts/setup.mjs",
+    "postinstall": "node node_modules/patchright/cli.js install chromium && node scripts/setup.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
+    "dotenv": "^17.4.2",
+    "js-yaml": "^4.1.0",
+    "openai": "^4.77.0",
+    "patchright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.7",
+    "@types/react-dom": "^19.0.3",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.3.1",
+    "electron-vite": "^2.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vite": "^5.4.11"
+  }
+}

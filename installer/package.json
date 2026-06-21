@@ -1,0 +1,20 @@
+{
+  "name": "@zyanwan/patchright-agent-installer",
+  "version": "0.1.0",
+  "description": "Public installer for the private Patchright-Agent skills repository.",
+  "type": "module",
+  "bin": {
+    "patchright-agent-installer": "bin/patchright-agent-installer.js"
+  },
+  "files": [
+    "bin",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,88 @@
+# criteria.example.yaml —— 业务筛选标准模板(可提交到仓库,不含真实敏感内容)
+#
+# 用途:
+#   - 运行时真实配置位于  %AppData%\bossauto-electron\criteria.yaml (不入库)
+#   - 换机器 / 重装 / 清缓存后,复制本模板为运行时 criteria.yaml,再按需改业务规则
+#   - 字段名必须与此处一致;代码只负责按本文件稳定执行,不在代码里硬编码业务规则
+#
+# 默认真发:run_plan.dry_run = false(直接在 BOSS 上点收藏/打招呼);如需只判定不点击调试,手动改回 true
+
+# ===== 硬规则(列表层确定性筛,只刷"能确定不符合"的;识别不到的放行到下一关) =====
+hard:
+  edu_levels_allowed: ['本科', '硕士']
+  age_max: 35
+  exp_years_min: 1
+  exp_years_max: 4
+  city_in: ['北京']
+  require_985_or_211: true
+  forbid_overseas_edu: true
+  forbid_tags: []
+  forbid_companies_current_only: [] # 当前任职公司黑名单(只看当前公司),示例留空
+  forbid_company_types: [] # 例如 ['外包', '猎头'],示例留空
+  # 允许名单:当前公司命中即直接放过、跳过公司关 LLM(子串匹配,关键词宜长不宜短)
+  # 含字节/快手/小红书系产品别名,避免"今日头条/抖音"等被误判为禁止大厂
+  allow_companies: ['字节跳动', '字节', '快手', '小红书', '网易有道', '今日头条', '抖店', '西瓜视频', '剪映', '火山引擎', 'TikTok', '行吟']
+
+# ===== 学历偏好(软信号,交给 LLM 参考) =====
+education_preference:
+  prefer_985: true
+  prefer_211: true
+  prefer_qs500: false
+  prefer_overseas: false
+  prefer_majors: []
+  avoid_majors: []
+  notes: ''
+
+# ===== 公司偏好(列表"公司关"使用) =====
+company_preference:
+  big_company_required: false
+  preferred_company_types: [] # 例如 ['互联网大厂', '知名MCN']
+  preferred_industries: [] # 例如 ['短视频', '电商']
+  notes: ''
+
+# ===== 岗位内容偏好(列表"职位关" + 详情最终判定使用) =====
+job_content_preference:
+  role_summary: '示例:短视频运营,负责选题、脚本、投放复盘'
+  evaluation_rules: []
+  must_be: [] # 例如 ['有完整短视频运营经验']
+  must_not_be: [] # 例如 ['纯客服', '纯销售']
+  strong_plus: [] # 例如 ['有爆款案例']
+  minus: []
+  # 职位关代码预筛(LLM 前):命中黑名单→直接刷;命中白名单→豁免硬刷;其余(含豁免)一律再过 LLM 职位关。只按岗位名(期望职位+工作经历职位)子串匹配,白名单优先。两者皆空=不启用。
+  title_allow_keywords: ['内容运营', '新媒体运营', '自媒体运营', '短视频运营', '视频运营', '内容策划', '内容创作', '内容编辑', '编导', '短视频编导', '抖音运营', '视频号运营', 'B站运营', '快手运营', '小红书运营', '账号运营', 'IP运营', '矩阵运营', '起号', '博主', 'UP主', '剪辑师', '出镜', '拍摄', '视频剪辑']
+  title_block_keywords: ['软件', '开发', '程序员', '前端', '后端', '算法', '测试', '运维', '数据库', '财务', '会计', '出纳', '审计', '税务', '人力资源', 'HR', '人事', '行政', '前台', '文秘', '招聘', '法务', '律师', '合规', '供应链', '采购', '物流', '仓储', '客服', '售后', '质检', '教师', '讲师', '教务', '课程顾问', '医护', '护士', '医生', '数据标注', 'AI训练师', '信息流', '投放', '优化师', '千川', '竞价', 'SEM', '安全', '项目管理', '招商', '商务', 'BD', '达人运营', '红人运营', 'KOL运营', '经纪人', '星探', '艺人经纪', '主播经纪', '产品经理', '产品运营', '社群运营', '私域运营', '策略运营', '数据运营', '业务运营', '搜索运营', '政府关系', '政务', 'PR', '公关', '直播中控', '场控', '销售', '电话销售', '地推', '公众号运营', '图文编辑', '图文文案', '活动策划', '广告代理', '广告投流', '广告策划', '主讲', '跨境']
+  notes: ''
+
+# ===== 候选人分析偏好 =====
+talent_analyzer_preference:
+  preferred_company_size: null
+  require_strong_intent: false
+  notes: ''
+
+# ===== 决策(详情判定为二选一:收藏 / 不要;拿不准一律放过交人工,无"待定") =====
+decision:
+  pass_score: 7 # 仅供参考显示,不再作为硬阈值;达标线看 job_content_preference
+  bias: balanced
+  action_on_pass: 打招呼
+  action_on_fail: 关闭看下一个
+  uncertain_band: [7, 7] # 已停用:判定不再有"待定"中间档
+
+# ===== 运行计划(整个自动化流程的唯一驱动来源) =====
+run_plan:
+  batch_size: 30 # 每批处理人数
+  gate_chunk_size: 5 # 公司关/职位关每次喂给 LLM 的人数,小片之间并发;留空走默认 5
+  dry_run: false # 默认真发(已移除模拟模式);如需只判定不点击调试,手动改回 true
+  confirm_filters: false # true 时每个任务前强制校验 BOSS 网页筛选条件
+  tasks:
+    - enabled: true
+      page: recommend # recommend(推荐页) 或 search(搜索页)
+      tab: recommend # 推荐页页签:recommend/latest/featured
+      keyword: '' # search 页才用:搜索关键词
+      limit: 30 # 本任务处理人数上限
+      action: greet # greet(打招呼) / collect(收藏) / none(只判定不动作)
+    - enabled: false
+      page: search
+      tab: ''
+      keyword: '短视频运营'
+      limit: 20
+      action: collect

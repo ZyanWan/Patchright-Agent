@@ -1,0 +1,21 @@
+node_modules/
+out/
+dist/
+chrome-profile/
+
+.env
+.env.local
+
+*.log
+*.tsbuildinfo
+*.bak.*
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Runtime business config and history. Keep templates only.
+criteria.yaml
+seen_log.json
+
+# Local worktrees and tool state.
+.claude/

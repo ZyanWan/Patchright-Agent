@@ -1,0 +1,41 @@
+{
+  "recommend": {
+    "degrees": [
+      "本科"
+    ],
+    "useDegreeRange": false,
+    "degreeMin": 5,
+    "degreeMax": 7,
+    "schools": [],
+    "onlyFirstDegree": false,
+    "experiences": [],
+    "ageMin": 22,
+    "ageMax": 35,
+    "gender": "不限",
+    "salaryMinK": 0,
+    "salaryMaxK": 0,
+    "activeness": "不限",
+    "jobHopFrequency": "不限",
+    "jobStatuses": [],
+    "custom": {}
+  },
+  "search": {
+    "degrees": [],
+    "useDegreeRange": false,
+    "degreeMin": 5,
+    "degreeMax": 7,
+    "schools": [],
+    "onlyFirstDegree": false,
+    "experiences": [],
+    "ageMin": 22,
+    "ageMax": 35,
+    "gender": "不限",
+    "salaryMinK": 0,
+    "salaryMaxK": 0,
+    "activeness": "不限",
+    "jobHopFrequency": "不限",
+    "jobStatuses": [],
+    "custom": {}
+  },
+  "searchKeywords": []
+}

@@ -13,7 +13,7 @@ private Skill source:
 There are two supported distribution paths:
 
 1. Direct private GitHub install with `npx git+https://...`. This downloads this repository as the package and installs its bundled `skills/` directory.
-2. Future public npm installer package. This package does not contain private Skill content. It checks the local environment, uses GitHub CLI authentication, clones the private repository to a temporary directory, copies every valid skill under `skills/`, then removes the temporary clone.
+2. Public npm installer package. This package does not contain private Skill content. It checks the local environment, uses GitHub CLI authentication, clones the private repository to a temporary directory, copies every valid skill under `skills/`, then removes the temporary clone.
 
 ## User Installation
 
@@ -23,25 +23,26 @@ The user must have access to the private GitHub repository.
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
 ```
 
-Future public npm installer path:
+Public npm installer path:
 
 ```bash
 gh auth login
-npx -y @zyanwan/patchright-agent-installer install codex
+npm install -g @zyanwan/patchright-agent-installer --registry=https://registry.npmjs.org/
+patchright-agent-installer install codex
 ```
 
 Claude Code:
 
 ```bash
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install claude
-npx -y @zyanwan/patchright-agent-installer install claude
+patchright-agent-installer install claude
 ```
 
 Custom skills directory:
 
 ```bash
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install --target ~/.agents/skills
-npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills
+patchright-agent-installer install --target ~/.agents/skills
 ```
 
 ## Target Paths

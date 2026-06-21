@@ -24,11 +24,11 @@ This repository is private. End users must have read access to `ZyanWan/Patchrig
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
 ```
 
-If using the future public npm installer package, users will run:
+Public npm installer:
 
 ```bash
-gh auth login
-npx -y @zyanwan/patchright-agent-installer install codex
+npm install -g @zyanwan/patchright-agent-installer --registry=https://registry.npmjs.org/
+patchright-agent-installer install codex
 ```
 
 Supported targets in the first installer version:
@@ -38,9 +38,10 @@ npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install claude
 npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install --target ~/.agents/skills
 
-npx -y @zyanwan/patchright-agent-installer install codex
-npx -y @zyanwan/patchright-agent-installer install claude
-npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills
+npm install -g @zyanwan/patchright-agent-installer --registry=https://registry.npmjs.org/
+patchright-agent-installer install codex
+patchright-agent-installer install claude
+patchright-agent-installer install --target ~/.agents/skills
 ```
 
 See `docs/distribution.md` and `installer/README.md` for publishing and installer details.

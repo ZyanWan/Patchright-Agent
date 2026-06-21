@@ -17,5 +17,8 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@zyanwan/patchright-agent-installer": "^0.1.0"
+  }
 }

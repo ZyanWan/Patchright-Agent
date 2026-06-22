@@ -1,48 +1,38 @@
 # Skill Distribution
 
-This project uses a public installer plus a private Skill source repository.
+This project distributes bundled Agent Skills through the public npm installer.
 
 ```text
 public npm package:
-  @zyanwan/patchright-agent-installer
-
-private Skill source:
-  ZyanWan/Patchright-Agent
+  @zyanwan/patchright-agent-installer@0.2.0
 ```
 
-There are two supported distribution paths:
-
-1. Direct private GitHub install with `npx git+https://...`. This downloads this repository as the package and installs its bundled `skills/` directory.
-2. Public npm installer package. This package does not contain private Skill content. It checks the local environment, uses GitHub CLI authentication, clones the private repository to a temporary directory, copies every valid skill under `skills/`, then removes the temporary clone.
+The current team installation path is npm-only. Use the fixed `0.2.0` version and the explicit `--source patchright-agent-installer/skills` argument so the installer reads from the skills bundled inside the npm package and does not clone GitHub.
 
 ## User Installation
 
-The user must have access to the private GitHub repository.
+Codex:
 
 ```bash
-npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills
 ```
 
-Public npm installer path:
+Update an existing Codex install:
 
 ```bash
-gh auth login
-npm install -g @zyanwan/patchright-agent-installer --registry=https://registry.npmjs.org/
-patchright-agent-installer install codex
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills --force
 ```
 
 Claude Code:
 
 ```bash
-npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install claude
-patchright-agent-installer install claude
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install claude --source patchright-agent-installer/skills
 ```
 
 Custom skills directory:
 
 ```bash
-npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install --target ~/.agents/skills
-patchright-agent-installer install --target ~/.agents/skills
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install --target ~/.agents/skills --source patchright-agent-installer/skills
 ```
 
 ## Target Paths
@@ -60,13 +50,13 @@ claude local -> ./.claude/skills
 Use `--scope project` to install into the current working directory:
 
 ```bash
-npx -y @zyanwan/patchright-agent-installer install codex --scope project
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --scope project --source patchright-agent-installer/skills
 ```
 
 Use `--target` when the agent has a custom skills directory:
 
 ```bash
-npx -y @zyanwan/patchright-agent-installer install --target /path/to/skills
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install --target /path/to/skills --source patchright-agent-installer/skills
 ```
 
 ## Publishing The Public Installer
@@ -85,8 +75,7 @@ If the npm scope `@zyanwan` is not available, rename the package before publishi
 ## Safety Model
 
 - The installer does not include GitHub tokens.
-- The installer does not bypass private repository permissions.
-- The installer requires the user to authenticate with `gh auth login`.
+- The documented npm installation path does not require GitHub authentication or repository cloning.
 - The installer installs only directories under `skills/` that contain `SKILL.md`.
 - Existing installed skills are not overwritten unless `--force` is provided.
 - With `--force`, existing skill directories are backed up before new copies are installed.

@@ -64,16 +64,15 @@
         <article class="install-panel primary-install">
           <span class="install-label">公开 npm 安装器</span>
           <h3>推荐方式</h3>
-          <pre><code>npm install -g @zyanwan/patchright-agent-installer
-patchright-agent-installer install codex</code></pre>
-          <p>零依赖安装 — npm 包内已包含完整 skills，无需 gh/git/GitHub 认证，一条命令完成。</p>
+          <pre><code>npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills</code></pre>
+          <p>固定使用 0.2.0 版本，并显式指定 npm 包内的 skills 目录，无需 gh/git/GitHub 认证，一条命令完成。</p>
         </article>
 
         <article class="install-panel">
-          <span class="install-label">私有 GitHub 源</span>
-          <h3>直接安装</h3>
-          <pre><code>npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex</code></pre>
-          <p>适合需要指定分支/tag 或从本地仓库目录安装的高级用户。</p>
+          <span class="install-label">已安装过</span>
+          <h3>覆盖更新</h3>
+          <pre><code>npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills --force</code></pre>
+          <p>适合已经安装过旧版本的电脑，安装器会先备份旧 Skill，再安装 npm 包内的新 Skill。</p>
         </article>
       </div>
 
@@ -270,6 +269,55 @@ patchright-agent-installer install codex</code></pre>
 
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll(); // 初始化
+
+      var snapQuery = window.matchMedia("(min-width: 981px)");
+      var reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+      var snapTargets = [{ id: "#top", el: document.querySelector(".hero") }].concat(sections)
+        .filter(function (item) { return item.el; });
+      var isSnapping = false;
+      var snapTimer = 0;
+
+      function nearestSnapIndex() {
+        var bestIndex = 0;
+        var bestDistance = Infinity;
+        snapTargets.forEach(function (item, index) {
+          var distance = Math.abs(item.el.getBoundingClientRect().top);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            bestIndex = index;
+          }
+        });
+        return bestIndex;
+      }
+
+      function snapTo(index) {
+        var target = snapTargets[index];
+        if (!target) return;
+        isSnapping = true;
+        window.clearTimeout(snapTimer);
+        target.el.scrollIntoView({
+          behavior: reducedMotionQuery.matches ? "auto" : "smooth",
+          block: "start"
+        });
+        snapTimer = window.setTimeout(function () {
+          isSnapping = false;
+        }, reducedMotionQuery.matches ? 80 : 760);
+      }
+
+      window.addEventListener("wheel", function (e) {
+        if (!snapQuery.matches || e.ctrlKey || Math.abs(e.deltaY) < 12) return;
+        if (isSnapping) {
+          e.preventDefault();
+          return;
+        }
+
+        var current = nearestSnapIndex();
+        var next = current + (e.deltaY > 0 ? 1 : -1);
+        if (next < 0 || next >= snapTargets.length) return;
+
+        e.preventDefault();
+        snapTo(next);
+      }, { passive: false });
     })();
   </script>
 </body>

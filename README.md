@@ -18,21 +18,26 @@ skills/
 
 ## Installation
 
-### Recommended: Public npm installer (zero dependencies)
+### Recommended: Public npm installer
 
-The npm package bundles all skills  no GitHub authentication, no Git clone required.
+The npm package bundles all skills. Use the fixed `0.2.0` command below and keep the explicit `--source` value so installation reads from the bundled skills directory and does not clone GitHub.
 
 ```bash
-npm install -g @zyanwan/patchright-agent-installer
-patchright-agent-installer install codex
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills
 ```
 
 ### Supported targets
 
 ```bash
-patchright-agent-installer install codex      # -> ~/.agents/skills
-patchright-agent-installer install claude     # -> ~/.claude/skills
-patchright-agent-installer install --target <path>
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install claude --source patchright-agent-installer/skills
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install --target <path> --source patchright-agent-installer/skills
+```
+
+To update an existing installation, add `--force`:
+
+```bash
+npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills --force
 ```
 
 ### Advanced: Install from local repository

@@ -437,9 +437,8 @@ Options:
   -h, --help                 Show this help
 
 Examples:
-  npx -y git+https://github.com/ZyanWan/Patchright-Agent.git install codex
-  npx -y @zyanwan/patchright-agent-installer install codex
-  npx -y @zyanwan/patchright-agent-installer install claude --force
-  npx -y @zyanwan/patchright-agent-installer install --target ~/.agents/skills
+  npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install codex --source patchright-agent-installer/skills
+  npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install claude --source patchright-agent-installer/skills --force
+  npx --registry=https://registry.npmjs.org/ --prefer-online -y @zyanwan/patchright-agent-installer@0.2.0 install --target ~/.agents/skills --source patchright-agent-installer/skills
 `);
 }

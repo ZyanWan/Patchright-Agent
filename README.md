@@ -1,4 +1,4 @@
-﻿# Patchright-Agent
+﻿# Patchright-Agent-Skills
 
 > 面向 AI Agent 的真实浏览器自动化技能层。  
 > 让 Agent 能在授权场景下，以接近真实用户的方式操作复杂 Web 应用。
